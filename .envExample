@@ -1,0 +1,4 @@
+REACT_APP_SIGNAL_URL=http://turn.thomsen-it.dk:8080
+REACT_APP_TURN_URL=turn:turn.thomsen-it.dk
+REACT_APP_TURN_USERNAME=
+REACT_APP_TURN_PASSWORD=
