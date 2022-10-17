@@ -15,6 +15,12 @@ To build and run as a docker container
 make -i
 ```
 
+To stop the docker container
+
+```shell
+make stop
+```
+
 To publish the docker image
 
 ```shell
@@ -23,7 +29,7 @@ make -i publish username=foo
 ```
 
 
-to run the docker image on a server
+To run the docker image on a server
 
 ```shell
 docker run -d -p 3000:3000 --env-file .env --name webrtc-server username/webrtc-server:latest
@@ -33,4 +39,4 @@ docker run -d -p 3000:3000 --env-file .env --name webrtc-server username/webrtc-
 
 > **_NOTE 2:_**  Open the firewall on the server.
 
-> **_NOTE 3:_**  To get the application working is TLS required. according to [blog.mozilla.org](https://blog.mozilla.org/webrtc/camera-microphone-require-https-in-firefox-68/), this is done to incease the security of regular users.
+> **_NOTE 3:_**  To get the application working is TLS required. According to [blog.mozilla.org](https://blog.mozilla.org/webrtc/camera-microphone-require-https-in-firefox-68/), this is done to incease the security of regular users.
