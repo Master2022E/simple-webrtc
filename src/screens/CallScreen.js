@@ -28,7 +28,7 @@ function CallScreen() {
   const startConnection = () => {
     navigator.mediaDevices
       .getUserMedia({
-        audio: false,
+        audio: true,
         video: {
           height: 350,
           width: 350,
@@ -144,7 +144,7 @@ function CallScreen() {
       <label>{"Username: " + localUsername}</label>
       <label>{"Room Id: " + roomName}</label>
       <video autoPlay muted playsInline ref={localVideoRef} />
-      <video autoPlay muted playsInline ref={remoteVideoRef} />
+      <video autoPlay playsInline ref={remoteVideoRef} />
     </div>
   );
 }
