@@ -1,0 +1,23 @@
+version: "3.7"
+
+services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./data/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ./data/caddy/data:/data # Optional
+      - ./data/caddy/config:/config # Optional
+
+  webrtc-server:
+    image: thomsen96/webrtc-server:latest
+    restart: unless-stopped
+    env_file:
+      - webrtc.env
+
+  signal-server:
+    image: thomsen96/signal-server:latest
+    restart: unless-stopped

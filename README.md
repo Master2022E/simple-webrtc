@@ -29,14 +29,25 @@ make -i publish username=foo
 ```
 
 
-To run the docker image on a server
+To run the application on a server there needs to be TLS. Therefor look in the [deployment](./deployment/) folder for the [docker-compose.yaml](./deployment/docker-compose.yaml) file that describes the deployment.
 
-```shell
-docker run -d -p 3000:3000 --env-file .env --name webrtc-server username/webrtc-server:latest
-```
+The concept of the deplyment is to place [Caddy](https://caddyserver.com/) in front of the application and let it work as a reverse proxy that will terminate the TLS to the application. The advantage to using Caddy is that it automatically gets TLS certificates from [Let's Encrypt](https://letsencrypt.org/).
 
-> **_NOTE 1:_**  make a copy of the .envExample called .env on the server and fill in configurations.
+Setup process:
 
-> **_NOTE 2:_**  Open the firewall on the server.
+1. Copy the docker-compose.yaml file to the server
 
-> **_NOTE 3:_**  To get the application working is TLS required. According to [blog.mozilla.org](https://blog.mozilla.org/webrtc/camera-microphone-require-https-in-firefox-68/), this is done to incease the security of regular users.
+2. Copy the webrtc.envExample to a file called webrtc.env on the server and fill in configurations.
+
+3. Copy the data/caddy/Caddy file to the server in the same relative path to the docker-compose file, and update the domain names accordingly. 
+
+4. Create the folders ./data/caddy/data and ./data/caddy/config
+    
+    `mkdir -p data/caddy/data && mkdir -p data/caddy/config`
+
+
+5. Run `docker-compose up -d`
+
+> **_NOTE 1:_**  Open the firewall on the server.
+
+> **_NOTE 2:_**  To get the application working is TLS required. According to [blog.mozilla.org](https://blog.mozilla.org/webrtc/camera-microphone-require-https-in-firefox-68/), this is done to incease the security of regular users.
