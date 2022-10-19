@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import socketio from "socket.io-client";
 import "./CallScreen.css";
 
@@ -11,6 +11,19 @@ function CallScreen() {
   const remoteVideoRef = useRef(null);
   const signalUrl = process.env.REACT_APP_SIGNAL_URL
   console.log(signalUrl)
+
+  const [ip, setip] = useState("")
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      console.log( this.responseText);
+      setip(this.responseText);
+    }   
+  };  
+  xhttp.open("GET", "//api.ipify.org?format=json", true);
+  xhttp.send();
+
+
   const socket = socketio(signalUrl, {
     autoConnect: false,
   });
@@ -141,6 +154,7 @@ function CallScreen() {
 
   return (
     <div>
+      <h1>Your IP {ip}</h1>
       <label>{"Username: " + localUsername}</label>
       <label>{"Room Id: " + roomName}</label>
       <video autoPlay muted playsInline ref={localVideoRef} />

@@ -5,10 +5,23 @@ import "./HomeScreen.css";
 function HomeScreen() {
   const [room, setRoom] = useState("");
   const [username, setUsername] = useState("");
+  const [ip, setip] = useState("");
+
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      console.log( this.responseText);
+      setip(this.responseText);
+    }
+  };
+  xhttp.open("GET", "//api.ipify.org?format=json", true);
+  xhttp.send();
+
 
   return (
     <form method="post" action="">
       <label for="username">Username</label>
+      <div><h1>Your IP {ip}</h1></div>
 
       <input
         value={username}
