@@ -23,11 +23,9 @@ const Location = () => {
 
   const getCountry = () => {
     if (ip === "") return;
-    // Documentation: https://ip-api.com/docs/api:json#test
+    const signalUrl = process.env.REACT_APP_SIGNAL_URL;
     axios
-      .get(
-        "http://ip-api.com/json/" + ip + "?fields=country,regionName,city,isp"
-      )
+      .get(signalUrl +"/ip/location/" + ip)
       .then((response) => {
         setCountry(response.data.country);
         setRegionName(response.data.regionName);
