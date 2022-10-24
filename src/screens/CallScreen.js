@@ -4,6 +4,7 @@ import Location from "../components/Location";
 import socketio from "socket.io-client";
 import "./CallScreen.css";
 import { ClientMonitor } from "@observertc/client-monitor-js";
+import WebRtcData from "../components/WebRtcData";
 
 
 
@@ -15,10 +16,10 @@ function CallScreen() {
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
 
-  const [VideoRTT, setVideoRTT] = useState("");
-  const [AudioRTT, setAudioRTT] = useState("");
-  const [VideoStat, setVideoStat] = useState("");
-  const [AudioStat, setAudioStat] = useState("");
+  const [videoRTT, setVideoRTT] = useState(0);
+  const [audioRTT, setAudioRTT] = useState(0);
+  const [videoStat, setVideoStat] = useState({});
+  const [audioStat, setAudioStat] = useState({});
 
   const signalUrl = process.env.REACT_APP_SIGNAL_URL;
   console.log(signalUrl);
@@ -115,17 +116,17 @@ function CallScreen() {
           //if (kind !== "video") continue;
           const temp0 = inboundRtp.stats;
           if (kind === "video") {
-            setVideoStat("kind:" + temp0["kind"] + ", jitterBufferDelay:" + temp0["jitterBufferDelay"] + ", jitter:" + temp0["jitter"] + ", packetsReceived:" + temp0["packetsReceived"] + ", packetsLost:" + temp0["packetsLost"] + ", type:" + temp0["type"]);
+            console.log("Setting the videoStat", temp0)
+            setVideoStat(temp0)
           } else if (kind === "audio") {
-            setAudioStat("kind:" + temp0["kind"] + ", jitterBufferDelay:" + temp0["jitterBufferDelay"] + ", jitter:" + temp0["jitter"] + ", packetsReceived:" + temp0["packetsReceived"] + ", packetsLost:" + temp0["packetsLost"] + ", type:" + temp0["type"]);
+            setAudioStat(temp0)
           }
 
           if (remoteOutboundRtp === undefined) {
-            console.log("option 1", trackId, inboundRtp.stats)
+            //console.log("option 1", trackId, inboundRtp.stats)
           }
           else {
-            console.log("option 2", trackId, inboundRtp.stats, remoteOutboundRtp.stats);
-            //console.log("kind:"+temp0["kind"],"jitterBufferDelay:"+temp0["jitterBufferDelay"],"jitter:"+temp0["jitter"],"packetsReceived:"+temp0["packetsReceived"],"packetsLost:"+temp0["packetsLost"],"type:"+temp0["type"])
+            //console.log("option 2", trackId, inboundRtp.stats, remoteOutboundRtp.stats);
 
             /*
               Example of a packet from firefox
@@ -183,9 +184,9 @@ function CallScreen() {
           measurements.push(roundTripTime);
 
           if (kind === "video") {
-            setVideoRTT(roundTripTime + " s")
+            setVideoRTT(roundTripTime)
           } else if (kind === "audio") {
-            setAudioRTT(roundTripTime + " s")
+            setAudioRTT(roundTripTime)
           }
 
         }
@@ -257,10 +258,7 @@ function CallScreen() {
   return (
     <div>
       <Location></Location>
-      <label>{"Video RTT: " + VideoRTT}</label>
-      <label>{"Audio RTT: " + AudioRTT}</label>
-      <label>{"VideoStat: " + VideoStat}</label>
-      <label>{"AudioStat: " + AudioStat}</label>
+      <WebRtcData videoStat={videoStat} audioStat={audioStat} videoRTT={videoRTT} audioRTT={audioRTT}></WebRtcData>
       <label>{"Username: " + localUsername}</label>
       <label>{"Room Id: " + roomName}</label>
 
