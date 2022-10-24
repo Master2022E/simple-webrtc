@@ -25,7 +25,7 @@ const Location = () => {
     if (ip === "") return;
     const signalUrl = process.env.REACT_APP_SIGNAL_URL;
     axios
-      .get(signalUrl +"/ip/location/" + ip)
+      .get(signalUrl + "/ip/location/" + ip)
       .then((response) => {
         setCountry(response.data.country);
         setRegionName(response.data.regionName);
