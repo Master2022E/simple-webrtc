@@ -1,4 +1,4 @@
 REACT_APP_SIGNAL_URL=https://signal.thomsen-it.dk
-REACT_APP_TURN_URL=turn:turn.thomsen-it.dk
+REACT_APP_TURN_URL=turn:turn.thomsen-it.dk?transport=tcp
 REACT_APP_TURN_USERNAME=
 REACT_APP_TURN_PASSWORD=
