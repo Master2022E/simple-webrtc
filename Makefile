@@ -29,4 +29,4 @@ local-install:
 	npm i
 
 lcoal-run:
-	npm start
+	npm start run
