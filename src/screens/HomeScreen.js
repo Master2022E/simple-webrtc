@@ -5,7 +5,11 @@ import "./HomeScreen.css";
 
 function HomeScreen() {
   const [room, setRoom] = useState("0");
-  const [username, setUsername] = useState("0");
+  const [username, setUsername] = useState("" + randomNum(0, 99));
+
+  function randomNum(min, max) {
+    return Math.floor(Math.random() * max) + min;
+  }
 
   return (
     <form method="post" action="">
