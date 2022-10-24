@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import "./HomeScreen.css";
 
 function HomeScreen() {
-  const [room, setRoom] = useState("");
-  const [username, setUsername] = useState("");
+  const [room, setRoom] = useState("0");
+  const [username, setUsername] = useState("0");
   const [ip, setip] = useState("");
 
   var xhttp = new XMLHttpRequest();
