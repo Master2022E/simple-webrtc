@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "https://coder-with-a-bushido.github.io/simple-webrtc-react-app",
   "dependencies": {
+    "@observertc/client-monitor-js": "^1.2.1",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^13.5.0",
