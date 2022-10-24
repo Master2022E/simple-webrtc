@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
+import Location from "../components/Location";
 import socketio from "socket.io-client";
 import "./CallScreen.css";
 
@@ -21,26 +22,15 @@ function CallScreen() {
   const roomName = params.room;
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
-  const signalUrl = "https://signal.thomsen-it.dk"
-  console.log(signalUrl)
 
-  const [ip, setip] = useState("")
+
   const [VideoRTT, setVideoRTT] = useState("")
   const [AudioRTT, setAudioRTT] = useState("")
   const [VideoStat, setVideoStat] = useState("")
   const [AudioStat, setAudioStat] = useState("")
 
-
-
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      console.log( this.responseText);
-      setip(this.responseText);
-    }   
-  };  
-  xhttp.open("GET", "//api.ipify.org?format=json", true);
-  xhttp.send();
+  const signalUrl = process.env.REACT_APP_SIGNAL_URL;
+  console.log(signalUrl);
 
 
   const socket = socketio(signalUrl, {
@@ -94,10 +84,12 @@ function CallScreen() {
 
   const createPeerConnection = () => {
     try {
-      const turnUrl = "turn:turn.thomsen-it.dk?transport=tcp"
-      const turnUsername = "Jonas1"
-      const turnPassword = "kode112"
-      console.log(turnUrl, turnUsername, turnPassword)
+
+      const turnUrl = process.env.REACT_APP_TURN_URL;
+      const turnUsername = process.env.REACT_APP_TURN_USERNAME;
+      const turnPassword = process.env.REACT_APP_TURN_PASSWORD;
+      console.log(turnUrl, turnUsername, turnPassword);
+
       pc = new RTCPeerConnection({
         iceServers: [
           {
@@ -272,7 +264,7 @@ function CallScreen() {
 
   return (
     <div>
-      <h1>Your IP {ip}</h1>
+      <Location></Location>
       <label>{"Username: " + localUsername}</label>
       <label>{"Room Id: " + roomName}</label>
       <label>{"Video RTT: " + VideoRTT}</label>
