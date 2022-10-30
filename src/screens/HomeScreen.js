@@ -16,7 +16,7 @@ function HomeScreen() {
       <Location></Location>
       <label for="username">Username</label>
 
-      <input
+      <input class="username-input"
         value={username}
         title="username"
         onInput={(e) => setUsername(e.target.value)}
@@ -24,13 +24,13 @@ function HomeScreen() {
 
       <label for="room">Room</label>
 
-      <input
+      <input class="room-input"
         value={room}
         title="room"
         onInput={(e) => setRoom(e.target.value)}
       />
       <Link to={`/call/${username}/${room}`}>
-        <input type="submit" name="submit" value="Join Room" />
+        <input id="start-call" type="submit" name="submit" value="Join Room" />
       </Link>
     </form>
   );
