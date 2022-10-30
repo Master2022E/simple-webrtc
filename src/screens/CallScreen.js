@@ -22,7 +22,8 @@ function CallScreen() {
   const [audioStat, setAudioStat] = useState({});
 
   const signalUrl = process.env.REACT_APP_SIGNAL_URL;
-  console.log(signalUrl);
+
+  console.log("SignalUrl: "+signalUrl);
 
   const socket = socketio(signalUrl, {
     autoConnect: false,
@@ -99,7 +100,15 @@ function CallScreen() {
       // see full config in Configuration section
       const config = {
         collectingPeriodInMs: 5000,
-      };
+        sampler: {
+          roomId: "testRoom",
+        },
+        sender: {
+            websocket: {
+                urls: ["ws://46.101.128.74:7080/samples/myServiceId/myMediaUnitId"]
+            }
+        }
+    };
       const monitor = ClientMonitor.create(config);
       monitor.addStatsCollector({
         id: "collectorId",
