@@ -1,0 +1,188 @@
+{
+  "id": "24fa8124-bb68-44f8-b951-71d843ef797b",
+  "version": "2.0",
+  "name": "test",
+  "url": "http://localhost:3000",
+  "tests": [{
+    "id": "40a7db12-4fe4-4d0c-bd5c-020108bdb172",
+    "name": "Start a session",
+    "commands": [{
+      "id": "054f14cf-c230-4395-8e88-f3498ad08756",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "1c37fd3c-ffbc-4265-9bb9-5e8b79978a6e",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1911x1158",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "2a2ed5e9-38a8-4904-b4f3-e188fa52e256",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "css=.ip > .value",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "5025f693-b72b-45b3-92c4-b2f6ff899240",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "css=.country > .value",
+      "targets": [
+        ["css=.country > .value", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/p/span[2]", "xpath:idRelative"],
+        ["xpath=//p/span[2]", "xpath:position"],
+        ["xpath=//span[contains(.,'Denmark')]", "xpath:innerText"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "bb162312-2c11-436d-9959-5e650df42c9d",
+      "comment": "",
+      "command": "storeText",
+      "target": "css=.ip > .value",
+      "targets": [
+        ["css=.ip > .value", "css:finder"],
+        ["xpath=//div[@id='root']/form/div/h1/span[2]", "xpath:idRelative"],
+        ["xpath=//span[2]", "xpath:position"],
+        ["xpath=//span[contains(.,'130.226.71.21')]", "xpath:innerText"]
+      ],
+      "value": "wanIp"
+    }, {
+      "id": "93ca7589-f7a8-493b-9373-7a2e87acec94",
+      "comment": "",
+      "command": "storeText",
+      "target": "css=.country > .value",
+      "targets": [
+        ["css=.country > .value", "css:finder"],
+        ["xpath=//div[@id='root']/form/div/p/span[2]", "xpath:idRelative"],
+        ["xpath=//p/span[2]", "xpath:position"],
+        ["xpath=//span[contains(.,'Denmark')]", "xpath:innerText"]
+      ],
+      "value": "country"
+    }, {
+      "id": "84acd138-e37c-48db-9be2-86f0ceeb49dd",
+      "comment": "",
+      "command": "storeText",
+      "target": "css=.region > .value",
+      "targets": [
+        ["css=.region > .value", "css:finder"],
+        ["xpath=//div[@id='root']/form/div/p[2]/span[2]", "xpath:idRelative"],
+        ["xpath=//p[2]/span[2]", "xpath:position"],
+        ["xpath=//span[contains(.,'South Denmark')]", "xpath:innerText"]
+      ],
+      "value": "region"
+    }, {
+      "id": "0e0de24b-e030-455d-bbfc-67e764fad79b",
+      "comment": "",
+      "command": "storeText",
+      "target": "css=.city > .value",
+      "targets": [
+        ["css=.city > .value", "css:finder"],
+        ["xpath=//div[@id='root']/form/div/p[3]/span[2]", "xpath:idRelative"],
+        ["xpath=//p[3]/span[2]", "xpath:position"],
+        ["xpath=//span[contains(.,'Odense')]", "xpath:innerText"]
+      ],
+      "value": "city"
+    }, {
+      "id": "15ab1c5c-a41d-4366-b876-e9dbf995e2a1",
+      "comment": "",
+      "command": "click",
+      "target": "css=.username-input",
+      "targets": [
+        ["css=.username-input", "css:finder"],
+        ["xpath=//input[@value='asdwdsadsadsa']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/form/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "df4ab24c-9390-4930-8499-fc1529463e4e",
+      "comment": "",
+      "command": "storeText",
+      "target": "css=.isp > .value",
+      "targets": [
+        ["css=.isp > .value", "css:finder"],
+        ["xpath=//div[@id='root']/form/div/p[4]/span[2]", "xpath:idRelative"],
+        ["xpath=//p[4]/span[2]", "xpath:position"],
+        ["xpath=//span[contains(.,'Forskningsnettet - Danish network for Research and Education')]", "xpath:innerText"]
+      ],
+      "value": "isp"
+    }, {
+      "id": "a63d9559-c4de-4859-99c1-58d2fcca1737",
+      "comment": "",
+      "command": "click",
+      "target": "css=.username-input",
+      "targets": [
+        ["css=.username-input", "css:finder"],
+        ["xpath=//input[@value='username']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/form/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "667387f1-bd32-48a7-b682-68da150bcf7a",
+      "comment": "",
+      "command": "type",
+      "target": "css=.username-input",
+      "targets": [
+        ["css=.username-input", "css:finder"],
+        ["xpath=//input[@value='username']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/form/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "username"
+    }, {
+      "id": "8dad53c8-5e2b-463f-94f9-72799f8030a6",
+      "comment": "",
+      "command": "click",
+      "target": "css=.room-input",
+      "targets": [
+        ["css=.room-input", "css:finder"],
+        ["xpath=//input[@value='0']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/form/input[2]", "xpath:idRelative"],
+        ["xpath=//input[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "5ed0d9bc-29a7-48ad-a70d-a87f03bc412c",
+      "comment": "",
+      "command": "type",
+      "target": "css=.room-input",
+      "targets": [
+        ["css=.room-input", "css:finder"],
+        ["xpath=//input[@value='room']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/form/input[2]", "xpath:idRelative"],
+        ["xpath=//input[2]", "xpath:position"]
+      ],
+      "value": "room"
+    }, {
+      "id": "d9060b12-e2af-4da2-98b4-ecf11210eb71",
+      "comment": "",
+      "command": "click",
+      "target": "id=start-call",
+      "targets": [
+        ["id=start-call", "id"],
+        ["name=submit", "name"],
+        ["css=#start-call", "css:finder"],
+        ["xpath=//input[@id='start-call']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/form/a/input", "xpath:idRelative"],
+        ["xpath=//a/input", "xpath:position"]
+      ],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "8275235a-5078-44e2-9f25-93520fe9323b",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["40a7db12-4fe4-4d0c-bd5c-020108bdb172"]
+  }],
+  "urls": ["http://localhost:3000/"],
+  "plugins": []
+}

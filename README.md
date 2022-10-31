@@ -21,13 +21,19 @@ To stop the docker container
 make stop
 ```
 
-To publish the docker image
+The preferred way of publishing is through the GitHub release page. Alternatively can it be done manually with the following
 
 ```shell
 docker login
 make -i publish username=foo
 ```
 
+To run the selenium test suite, start the app and run the tests.
+
+```shell
+python -m pip install -r requirements.txt
+python -m pytest
+```
 
 To run the application on a server there needs to be TLS. Therefor look in the [deployment](./deployment/) folder for the [docker-compose.yaml](./deployment/docker-compose.yaml) file that describes the deployment.
 
