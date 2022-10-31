@@ -5,6 +5,7 @@ import socketio from "socket.io-client";
 import "./CallScreen.css";
 import { ClientMonitor } from "@observertc/client-monitor-js";
 import WebRtcData from "../components/WebRtcData";
+import { v4 as uuidv4 } from 'uuid';
 
 
 
@@ -23,7 +24,7 @@ function CallScreen() {
 
   const signalUrl = process.env.REACT_APP_SIGNAL_URL;
 
-  console.log("SignalUrl: "+signalUrl);
+  console.log("SignalUrl: " + signalUrl);
 
   const socket = socketio(signalUrl, {
     autoConnect: false,
@@ -80,7 +81,10 @@ function CallScreen() {
       const turnUrl = process.env.REACT_APP_TURN_URL;
       const turnUsername = process.env.REACT_APP_TURN_USERNAME;
       const turnPassword = process.env.REACT_APP_TURN_PASSWORD;
-      console.log(turnUrl, turnUsername, turnPassword);
+      const observeRTCDomain = process.env.REACT_APP_OBSERVERTC_DOMAIN;
+      const observeRTCPort = process.env.REACT_APP_OBSERVERTC_PORT;
+      const observeRTCPath = process.env.REACT_APP_OBSERVERTC_PATH;
+      console.log(turnUrl, turnUsername);
 
       pc = new RTCPeerConnection({
         iceServers: [
@@ -100,19 +104,31 @@ function CallScreen() {
       // see full config in Configuration section
       const config = {
         collectingPeriodInMs: 5000,
+        samplingPeriodInMs: 10000,
+        sendingPeriodInMs: 15000,
         sampler: {
-          roomId: "testRoom",
+          roomId: params.room,
+          clientId: uuidv4(),
+          userId: params.username,
         },
         sender: {
-            websocket: {
-                urls: ["ws://46.101.128.74:7080/samples/myServiceId/myMediaUnitId"]
-            }
+          format: "protobuf",
+          websocket: {
+            urls: ["ws://" + observeRTCDomain + ":" + observeRTCPort + observeRTCPath],
+            maxRetries: 3,
+          }
         }
-    };
+      };
       const monitor = ClientMonitor.create(config);
       monitor.addStatsCollector({
         id: "collectorId",
         getStats: () => pc.getStats(),
+      });
+      monitor.events.onSampleCreated(sample => {
+        console.log("Sample is created", sample);
+      });
+      monitor.events.onSampleSent(() => {
+        console.log("Samples are sent to the observer");
       });
 
       monitor.events.onStatsCollected(() => {
