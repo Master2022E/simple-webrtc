@@ -3,8 +3,9 @@ import { useRef, useEffect, useState } from "react";
 import Location from "../components/Location";
 import socketio from "socket.io-client";
 import "./CallScreen.css";
-import { ClientMonitor } from "@observertc/client-monitor-js";
+//import { ClientMonitor } from "@observertc/client-monitor-js";
 import WebRtcData from "../components/WebRtcData";
+import * as WebRtCMonitor from "../utils/WebRtcMonitor";
 import { v4 as uuidv4 } from 'uuid';
 
 
@@ -44,6 +45,7 @@ function CallScreen() {
     navigator.mediaDevices
       .getUserMedia({
         audio: true,
+        fake: true,
         video: {
           height: 350,
           width: 350,
@@ -81,9 +83,9 @@ function CallScreen() {
       const turnUrl = process.env.REACT_APP_TURN_URL;
       const turnUsername = process.env.REACT_APP_TURN_USERNAME;
       const turnPassword = process.env.REACT_APP_TURN_PASSWORD;
-      const observeRTCDomain = process.env.REACT_APP_OBSERVERTC_DOMAIN;
-      const observeRTCPort = process.env.REACT_APP_OBSERVERTC_PORT;
-      const observeRTCPath = process.env.REACT_APP_OBSERVERTC_PATH;
+      //const observeRTCDomain = process.env.REACT_APP_OBSERVERTC_DOMAIN;
+      //const observeRTCPort = process.env.REACT_APP_OBSERVERTC_PORT;
+      //const observeRTCPath = process.env.REACT_APP_OBSERVERTC_PATH;
       console.log(turnUrl, turnUsername);
 
       pc = new RTCPeerConnection({
@@ -102,6 +104,7 @@ function CallScreen() {
         pc.addTrack(track, localStream);
       }
       // see full config in Configuration section
+      /*
       const config = {
         collectingPeriodInMs: 5000,
         samplingPeriodInMs: 10000,
@@ -119,22 +122,17 @@ function CallScreen() {
           }
         }
       };
-      const monitor = ClientMonitor.create(config);
+      */
+      const monitor = WebRtCMonitor.monitor
       monitor.addStatsCollector({
-        id: "collectorId",
+        id: uuidv4(),
         getStats: () => pc.getStats(),
-      });
-      monitor.events.onSampleCreated(sample => {
-        console.log("Sample is created", sample);
-      });
-      monitor.events.onSampleSent(() => {
-        console.log("Samples are sent to the observer");
       });
 
       monitor.events.onStatsCollected(() => {
         const storage = monitor.storage;
         for (const inboundRtp of storage.inboundRtps()) {
-          const trackId = inboundRtp.getTrackId();
+          //const trackId = inboundRtp.getTrackId();
           const remoteOutboundRtp = inboundRtp.getRemoteOutboundRtp();
 
           const { kind } = inboundRtp.stats;
