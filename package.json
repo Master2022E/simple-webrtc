@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "https://thomsen-it.dk/",
   "dependencies": {
-    "@observertc/client-monitor-js": "file:../client-monitor-js",
+    "@observertc/client-monitor-js": "github:observertc/client-monitor-js",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^13.5.0",
