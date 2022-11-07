@@ -134,6 +134,12 @@ function CallScreen() {
           if (doLog) {
             console.log("outboundRtp (" + stats.kind + ")", stats)
           }
+          monitor.addExtensionStats({
+            type: "OUT_BOUND_RTC",
+            payload: JSON.stringify({
+              stats
+            }),
+          })
           /* stats contains: {
             bytesSent: 918743,
             codecId: "3510ff05",
@@ -163,10 +169,20 @@ function CallScreen() {
 
           const remoteInboundRtp = outboundRtp.getRemoteInboundRtp();
 
+          const remoteInboundRtpStats = remoteInboundRtp.stats
+
           const { roundTripTime, kind } = remoteInboundRtp.stats;
           if (doLog) {
             console.log("remoteInboundRtp (" + kind + ")", remoteInboundRtp.stats)
           }
+
+          monitor.addExtensionStats({
+            type: "REMOTE_IN_BOUND_RTC",
+            payload: JSON.stringify({
+              remoteInboundRtpStats
+            }),
+          })
+
           if (kind === "video") {
             setVideoRTT(roundTripTime)
             /* stats contains: {
@@ -223,6 +239,14 @@ function CallScreen() {
           if (doLog) {
             console.log("inboundRtp (" + stats.kind + ")", stats)
           }
+
+          monitor.addExtensionStats({
+            type: "IN_BOUND_RTC",
+            payload: JSON.stringify({
+              stats
+            }),
+          })
+
           /* stats contains: {
             bytesReceived: 427194,
             codecId: "3d5f88e5",
@@ -260,9 +284,19 @@ function CallScreen() {
 
           const remoteOutboundRtp = inboundRtp.getRemoteOutboundRtp()
 
+          const remoteOutboundRtpStats = remoteOutboundRtp.stats
+
           if (doLog) {
-            console.log("remoteOutboundRtp (" + remoteOutboundRtp.stats.kind + ")", remoteOutboundRtp.stats)
+            console.log("remoteOutboundRtp (" + remoteOutboundRtpStats.kind + ")", remoteOutboundRtpStats)
           }
+
+          monitor.addExtensionStats({
+            type: "REMOTE_OUT_BOUND_RTC",
+            payload: JSON.stringify({
+              remoteOutboundRtpStats
+            }),
+          })
+
           const { kind } = inboundRtp.stats;
           //if (kind !== "video") continue;
           const temp0 = inboundRtp.stats;
