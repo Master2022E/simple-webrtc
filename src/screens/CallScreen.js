@@ -9,7 +9,13 @@ import * as WebRtCMonitor from "../utils/WebRtcMonitor";
 import { v4 as uuidv4 } from 'uuid';
 
 
+const signalUrl = process.env.REACT_APP_SIGNAL_URL;
+const turnUrl = process.env.REACT_APP_TURN_URL;
+const turnUsername = process.env.REACT_APP_TURN_USERNAME;
+const turnPassword = process.env.REACT_APP_TURN_PASSWORD;
 
+console.log("Signal config:", signalUrl);
+console.log("Turn config:", turnUrl, turnUsername);
 
 function CallScreen() {
   const params = useParams();
@@ -18,14 +24,16 @@ function CallScreen() {
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
 
+
+  const [logRtp, setLogRtp] = useState(false);
+  const stateRef = useRef();
+  stateRef.current = logRtp
+
   const [videoRTT, setVideoRTT] = useState(0);
   const [audioRTT, setAudioRTT] = useState(0);
   const [videoStat, setVideoStat] = useState({});
   const [audioStat, setAudioStat] = useState({});
 
-  const signalUrl = process.env.REACT_APP_SIGNAL_URL;
-
-  console.log("SignalUrl: " + signalUrl);
 
   const socket = socketio(signalUrl, {
     autoConnect: false,
@@ -80,10 +88,8 @@ function CallScreen() {
   const createPeerConnection = () => {
     try {
 
-      const turnUrl = process.env.REACT_APP_TURN_URL;
-      const turnUsername = process.env.REACT_APP_TURN_USERNAME;
-      const turnPassword = process.env.REACT_APP_TURN_PASSWORD;
-      console.log(turnUrl, turnUsername);
+
+
 
       pc = new RTCPeerConnection({
         iceServers: [
@@ -110,6 +116,9 @@ function CallScreen() {
       monitor.events.onStatsCollected(() => {
         // First lets look at the data that we send to the receiver.
         // This includes outbound-rtp and remote-inbound.rtp
+
+        const doLog = stateRef.current
+
         for (const outboundRtp of monitor.storage.outboundRtps()) {
 
           // The outbound-rtp contains information of the type of data that we send.
@@ -122,7 +131,9 @@ function CallScreen() {
           //const sender = outboundRtp.getSender()
 
           const stats = outboundRtp.stats
-          console.log("outboundRtp (" + stats.kind + ")", stats)
+          if (doLog) {
+            console.log("outboundRtp (" + stats.kind + ")", stats)
+          }
           /* stats contains: {
             bytesSent: 918743,
             codecId: "3510ff05",
@@ -153,8 +164,9 @@ function CallScreen() {
           const remoteInboundRtp = outboundRtp.getRemoteInboundRtp();
 
           const { roundTripTime, kind } = remoteInboundRtp.stats;
-          console.log("remoteInboundRtp (" + kind + ")", remoteInboundRtp.stats)
-
+          if (doLog) {
+            console.log("remoteInboundRtp (" + kind + ")", remoteInboundRtp.stats)
+          }
           if (kind === "video") {
             setVideoRTT(roundTripTime)
             /* stats contains: {
@@ -208,8 +220,9 @@ function CallScreen() {
           // const ssrc = inboundRtp.getSsrc() // contains a number i.e. 3244738933, It is also in both the stats and remoteOutboundRtp.
 
           const stats = inboundRtp.stats
-
-          console.log("inboundRtp (" + stats.kind + ")", stats)
+          if (doLog) {
+            console.log("inboundRtp (" + stats.kind + ")", stats)
+          }
           /* stats contains: {
             bytesReceived: 427194,
             codecId: "3d5f88e5",
@@ -247,14 +260,13 @@ function CallScreen() {
 
           const remoteOutboundRtp = inboundRtp.getRemoteOutboundRtp()
 
-
-          console.log("remoteOutboundRtp (" + remoteOutboundRtp.stats.kind + ")", remoteOutboundRtp.stats)
-
+          if (doLog) {
+            console.log("remoteOutboundRtp (" + remoteOutboundRtp.stats.kind + ")", remoteOutboundRtp.stats)
+          }
           const { kind } = inboundRtp.stats;
           //if (kind !== "video") continue;
           const temp0 = inboundRtp.stats;
           if (kind === "video") {
-            console.log("Setting the videoStat", temp0)
             setVideoStat(temp0)
             /* stats contains: {
               bytesSent: 923899,
@@ -331,6 +343,7 @@ function CallScreen() {
   };
 
 
+
   socket.on("ready", () => {
     console.log("Ready to Connect!");
     createPeerConnection();
@@ -349,6 +362,11 @@ function CallScreen() {
     };
   }, []);
 
+  const handleChange = (e) => {
+    const { checked } = e.target
+    setLogRtp(checked)
+  }
+
   return (
     <div>
       <Location></Location>
@@ -358,6 +376,22 @@ function CallScreen() {
 
       <video autoPlay muted playsInline ref={localVideoRef} />
       <video autoPlay playsInline ref={remoteVideoRef} />
+
+      <div style={{ color: "#000000" }}>
+        <table>
+
+        </table>
+        <tr>
+          <td>
+            <p>Enable console logging of RTP data connections:</p>
+          </td>
+          <td>
+            <input type="checkbox" onChange={handleChange} defaultChecked={logRtp} />
+
+          </td>
+        </tr>
+
+      </div>
     </div>
   );
 }
