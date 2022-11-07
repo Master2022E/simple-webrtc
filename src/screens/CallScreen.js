@@ -83,9 +83,6 @@ function CallScreen() {
       const turnUrl = process.env.REACT_APP_TURN_URL;
       const turnUsername = process.env.REACT_APP_TURN_USERNAME;
       const turnPassword = process.env.REACT_APP_TURN_PASSWORD;
-      //const observeRTCDomain = process.env.REACT_APP_OBSERVERTC_DOMAIN;
-      //const observeRTCPort = process.env.REACT_APP_OBSERVERTC_PORT;
-      //const observeRTCPath = process.env.REACT_APP_OBSERVERTC_PATH;
       console.log(turnUrl, turnUsername);
 
       pc = new RTCPeerConnection({
@@ -103,26 +100,7 @@ function CallScreen() {
       for (const track of localStream.getTracks()) {
         pc.addTrack(track, localStream);
       }
-      // see full config in Configuration section
-      /*
-      const config = {
-        collectingPeriodInMs: 5000,
-        samplingPeriodInMs: 10000,
-        sendingPeriodInMs: 15000,
-        sampler: {
-          roomId: params.room,
-          clientId: uuidv4(),
-          userId: params.username,
-        },
-        sender: {
-          format: "protobuf",
-          websocket: {
-            urls: ["ws://" + observeRTCDomain + ":" + observeRTCPort + observeRTCPath],
-            maxRetries: 3,
-          }
-        }
-      };
-      */
+
       const monitor = WebRtCMonitor.monitor
       monitor.addStatsCollector({
         id: uuidv4(),
@@ -130,10 +108,147 @@ function CallScreen() {
       });
 
       monitor.events.onStatsCollected(() => {
-        const storage = monitor.storage;
-        for (const inboundRtp of storage.inboundRtps()) {
-          //const trackId = inboundRtp.getTrackId();
-          const remoteOutboundRtp = inboundRtp.getRemoteOutboundRtp();
+        // First lets look at the data that we send to the receiver.
+        // This includes outbound-rtp and remote-inbound.rtp
+        for (const outboundRtp of monitor.storage.outboundRtps()) {
+
+          // The outbound-rtp contains information of the type of data that we send.
+          // Active, targetBitrate, framesSent, packetsSent, bytesSent
+
+          // NOTE: In FireFox is all these undefined.
+          //const ssrc = outboundRtp.getSsrc()
+          //const trackId = outboundRtp.getTrackId()
+          //const mediaSource = outboundRtp.getMediaSource()
+          //const sender = outboundRtp.getSender()
+
+          const stats = outboundRtp.stats
+          console.log("outboundRtp (" + stats.kind + ")", stats)
+          /* stats contains: {
+            bytesSent: 918743,
+            codecId: "3510ff05",
+            firCount: 0,
+            frameHeight: 350,
+            frameWidth: 350,
+            framesEncoded: 1360,
+            framesSent: 1360,
+            headerBytesSent: 38160,
+            hugeFramesSent: 0,
+            id: "c17b71eb",
+            kind: "video",
+            mediaType: "video",
+            nackCount: 0,
+            packetsSent: 1361,
+            pliCount: 0,
+            qpSum: 3150,
+            remoteId: "d9a622b",
+            retransmittedBytesSent: 0,
+            retransmittedPacketsSent: 0,
+            ssrc: 683143463,
+            timestamp: undefined,
+            totalEncodeTime: 2.021,
+            totalEncodedBytesTarget: 7495329,
+            type: "outbound-rtp"
+          } */
+
+          const remoteInboundRtp = outboundRtp.getRemoteInboundRtp();
+
+          const { roundTripTime, kind } = remoteInboundRtp.stats;
+          console.log("remoteInboundRtp (" + kind + ")", remoteInboundRtp.stats)
+
+          if (kind === "video") {
+            setVideoRTT(roundTripTime)
+            /* stats contains: {
+              codecId: "57e44166",
+              fractionLost: 0,
+              id: "49881f3",
+              jitter: 0.004,
+              kind: "video",
+              localId: "93489802",
+              mediaType: "video",
+              packetsLost: 0,
+              packetsReceived: 97,
+              roundTripTime: 0.026,
+              roundTripTimeMeasurements: 40,
+              ssrc: 3647127630,
+              timestamp: undefined,
+              totalRoundTripTime: 0.776,
+              type: "remote-inbound-rtp"
+            } */
+          } else if (kind === "audio") {
+            setAudioRTT(roundTripTime)
+            /* stats contains: {
+              codecId: "ce84b808",
+              fractionLost: 0,
+              id: "1c3c052d",
+              jitter: 0.004,
+              kind: "audio",
+              localId: "e9eea0d0",
+              mediaType: "audio",
+              packetsLost: 0,
+              packetsReceived: 1191,
+              roundTripTime: 0.021,
+              roundTripTimeMeasurements: 20,
+              ssrc: 342435103,
+              timestamp: undefined,
+              totalRoundTripTime: 0.376,
+              type: "remote-inbound-rtp"
+            } */
+          }
+        }
+
+
+        // For the inboundRtp can we read information about what is being sent to us.
+        // 
+        for (const inboundRtp of monitor.storage.inboundRtps()) {
+
+          // NOTE: In FireFox is all these undefined.
+          // const receiver = inboundRtp.getReceiver() 
+          // const trackId = inboundRtp.getTrackId() 
+          // const audioPlayout = inboundRtp.getAudioPlayout()
+          // const ssrc = inboundRtp.getSsrc() // contains a number i.e. 3244738933, It is also in both the stats and remoteOutboundRtp.
+
+          const stats = inboundRtp.stats
+
+          console.log("inboundRtp (" + stats.kind + ")", stats)
+          /* stats contains: {
+            bytesReceived: 427194,
+            codecId: "3d5f88e5",
+            discardedPackets: 0,
+            firCount: 0,
+            frameHeight: 350,
+            frameWidth: 350,
+            framesDecoded: 610,
+            framesPerSecond: 22,
+            framesReceived: 610,
+            headerBytesReceived: 17176,
+            id: "fe1b8f93",
+            jitter: 0.0048111111111111115,
+            jitterBufferDelay: 14.001,
+            jitterBufferEmittedCount: 609,
+            kind: "video",
+            lastPacketReceivedTimestamp: 1667816599642,
+            mediaType: "video",
+            nackCount: 0,
+            packetsDiscarded: 0,
+            packetsLost: 0,
+            packetsReceived: 612,
+            pliCount: 0,
+            qpSum: 1698,
+            remoteId: "a6eb54c4",
+            ssrc: 63934536,
+            timestamp: undefined,
+            totalDecodeTime: 0.584,
+            totalInterFrameDelay: 34.722999999999914,
+            totalProcessingDelay: 11.935091,
+            totalSquaredInterFrameDelay: 2.2930650000000004,
+            type: "inbound-rtp"
+          } */
+
+
+          const remoteOutboundRtp = inboundRtp.getRemoteOutboundRtp()
+
+
+          console.log("remoteOutboundRtp (" + remoteOutboundRtp.stats.kind + ")", remoteOutboundRtp.stats)
 
           const { kind } = inboundRtp.stats;
           //if (kind !== "video") continue;
@@ -141,82 +256,38 @@ function CallScreen() {
           if (kind === "video") {
             console.log("Setting the videoStat", temp0)
             setVideoStat(temp0)
+            /* stats contains: {
+              bytesSent: 923899,
+              codecId: "dfd798a1",
+              id: "5fd904dd",
+              kind: "video",
+              localId: "2e992f49",
+              mediaType: "video",
+              packetsSent: 1371,
+              remoteTimestamp: 1667817904210,
+              ssrc: 4115537781,
+              timestamp: undefined,
+              type: "remote-outbound-rtp"
+            } */
           } else if (kind === "audio") {
             setAudioStat(temp0)
+            /* stats contains: {
+              bytesSent: 21734,
+              codecId: "f0555668",
+              id: "75cec9da",
+              kind: "audio",
+              localId: "a5377156",
+              mediaType: "audio",
+              packetsSent: 134,
+              remoteTimestamp: 1667817834337,
+              ssrc: 439550741,
+              timestamp: undefined,
+              type: "remote-outbound-rtp"
+            } */
           }
-
-          if (remoteOutboundRtp === undefined) {
-            //console.log("option 1", trackId, inboundRtp.stats)
-          }
-          else {
-            //console.log("option 2", trackId, inboundRtp.stats, remoteOutboundRtp.stats);
-
-            /*
-              Example of a packet from firefox
-              temp0 = {
-              "id": "69933c0b",
-              "type": "inbound-rtp",
-              "codecId": "1270a47b",
-              "kind": "video",
-              "mediaType": "video",
-              "ssrc": 1269111426,
-              "discardedPackets": 0,
-              "jitter": 0.038955555555555556,
-              "packetsDiscarded": 0,
-              "packetsLost": 0,
-              "packetsReceived": 1529,
-              "bytesReceived": 1009815,
-              "firCount": 0,
-              "frameHeight": 224,
-              "frameWidth": 350,
-              "framesDecoded": 1282,
-              "framesPerSecond": 16,
-              "framesReceived": 1284,
-              "headerBytesReceived": 36768,
-              "jitterBufferDelay": 126.159,
-              "jitterBufferEmittedCount": 1282,
-              "lastPacketReceivedTimestamp": 1666556261004,
-              "nackCount": 0,
-              "pliCount": 0,
-              "remoteId": "b936bade",
-              "totalDecodeTime": 2.32,
-              "totalInterFrameDelay": 63.580000000000055,
-              "totalProcessingDelay": 135.07665699999998,
-              "totalSquaredInterFrameDelay": 7.849490000000027
-              }
-            */
-          }
-
         }
 
-        const RTTs = new Map();
-        for (const outboundRtp of monitor.storage.outboundRtps()) {
-          const remoteInboundRtp = outboundRtp.getRemoteInboundRtp();
-          const { roundTripTime } = remoteInboundRtp.stats;
 
-          const { kind } = remoteInboundRtp.stats;
-
-          //if (kind !== "video") continue;
-          const peerConnectionId = outboundRtp.getPeerConnection()?.collectorId;
-          let measurements = RTTs.get(peerConnectionId);
-          //console.log("TrackID: ",trackId)
-          if (!measurements) {
-            measurements = [];
-            RTTs.set(kind, measurements);
-          }
-          measurements.push(roundTripTime);
-
-          if (kind === "video") {
-            setVideoRTT(roundTripTime)
-          } else if (kind === "audio") {
-            setAudioRTT(roundTripTime)
-          }
-
-        }
-        // here you have the RTT measurements groupped by peer connections
-        if (RTTs.size !== 0) {
-          console.log(Array.from(RTTs.entries()));
-        }
 
       });
       console.log("PeerConnection created");

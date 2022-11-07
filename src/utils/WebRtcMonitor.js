@@ -11,7 +11,7 @@ const config = {
   samplingPeriodInMs: 10000,
   sendingPeriodInMs: 15000,
   sampler: {
-    roomId: 0,
+    roomId: "0",
     clientId: uuidv4(),
     userId: uuidv4(),
   },
