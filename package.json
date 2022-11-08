@@ -19,7 +19,6 @@
     "webrtc-adapter": "^8.1.1"
   },
   "scripts": {
-    "postinstall": "patch-package",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
