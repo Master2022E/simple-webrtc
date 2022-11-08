@@ -88,9 +88,6 @@ function CallScreen() {
   const createPeerConnection = () => {
     try {
 
-
-
-
       pc = new RTCPeerConnection({
         iceServers: [
           {

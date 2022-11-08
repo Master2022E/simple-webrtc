@@ -21,6 +21,8 @@ The test is not done yet. But in this run is the outbound jitter not `null`. And
 
 Next up is testing our [firefox implementation of ObserveRTC](https://github.com/Master2022E/client-monitor-js).
 
+---
+
 Tests is in [./firefox.json](./firefox.json) and then also individually in
 
 - [./firefox-inbound-audio.json](./firefox-inbound-audio.json)
@@ -30,8 +32,18 @@ Tests is in [./firefox.json](./firefox.json) and then also individually in
 
 with the query:
 
-```
+```shell
 // Firefox client id: 35b098ea-31f3-4265-af50-0b410b6970b9
 
 db.reports.find({type: { $in: ["INBOUND_VIDEO_TRACK", "OUTBOUND_VIDEO_TRACK", "INBOUND_AUDIO_TRACK", "OUTBOUND_AUDIO_TRACK"] }, "payload.clientId" : "35b098ea-31f3-4265-af50-0b410b6970b9" })
 ```
+
+The difference is small, but significant.
+
+We will try to add more information in the firefox implementation.
+
+---
+
+It seems difficult to add the data that we want to the sampler in the ObserveRTC module.
+
+Therefor did we add our own metrics data in on onStatsCollected with the function addExtensionStats.
