@@ -114,6 +114,8 @@ function CallScreen() {
         // First lets look at the data that we send to the receiver.
         // This includes outbound-rtp and remote-inbound.rtp
 
+        console.log("Stats collected");
+
         const doLog = stateRef.current
 
         for (const outboundRtp of monitor.storage.outboundRtps()) {
