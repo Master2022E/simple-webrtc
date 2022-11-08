@@ -1,15 +1,9 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import Location from "../components/Location";
 import "./HomeScreen.css";
 
-function HomeScreen() {
-  const [room, setRoom] = useState("0");
-  const [username, setUsername] = useState("" + randomNum(0, 99));
+function HomeScreen({ room, setRoom, username, setUsername, clientId }) {
 
-  function randomNum(min, max) {
-    return Math.floor(Math.random() * max) + min;
-  }
 
   return (
     <form method="post" action="">
@@ -29,6 +23,9 @@ function HomeScreen() {
         title="room"
         onInput={(e) => setRoom(e.target.value)}
       />
+
+      <label>{"Client Id: " + clientId}</label>
+
       <Link to={`/call/${username}/${room}`}>
         <input id="start-call" type="submit" name="submit" value="Join Room" />
       </Link>

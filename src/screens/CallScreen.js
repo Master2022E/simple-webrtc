@@ -19,10 +19,8 @@ const useFakeCamera = process.env.REACT_APP_USE_FAKE_CAMERA;
 console.log("Signal config:", signalUrl);
 console.log("Turn config:", turnUrl, turnUsername);
 
-function CallScreen() {
-  const params = useParams();
-  const localUsername = params.username;
-  const roomName = params.room;
+function CallScreen({ clientId }) {
+  const { username, room } = useParams();
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
 
@@ -45,8 +43,8 @@ function CallScreen() {
 
   const sendData = (data) => {
     socket.emit("data", {
-      username: localUsername,
-      room: roomName,
+      username: username,
+      room: room,
       data: data,
     });
   };
@@ -72,7 +70,7 @@ function CallScreen() {
         console.log("Local Stream found");
         localVideoRef.current.srcObject = stream;
         socket.connect();
-        socket.emit("join", { username: localUsername, room: roomName });
+        socket.emit("join", { username: username, room: room });
       })
       .catch((error) => {
         console.error("Stream not found: ", error);
@@ -113,7 +111,14 @@ function CallScreen() {
         pc.addTrack(track, localStream);
       }
 
-      const monitor = WebRtCMonitor.monitor
+      const monitor = WebRtCMonitor.monitor({
+        sampler: {
+          roomId: room,         // Generated from the user
+          clientId: clientId,   // Keep as a UUID
+          userId: username,     // Generated from the user
+        }
+      })
+
       monitor.addStatsCollector({
         id: uuidv4(),
         getStats: () => pc.getStats(),
@@ -413,8 +418,9 @@ function CallScreen() {
     <div>
       <Location></Location>
       <WebRtcData videoStat={videoStat} audioStat={audioStat} videoRTT={videoRTT} audioRTT={audioRTT}></WebRtcData>
-      <label>{"Username: " + localUsername}</label>
-      <label>{"Room Id: " + roomName}</label>
+      <label>{"Username: " + username}</label>
+      <label>{"Room Id: " + room}</label>
+      <label>{"Client Id: " + clientId}</label>
 
       <video autoPlay muted playsInline ref={localVideoRef} />
       <video autoPlay playsInline ref={remoteVideoRef} />
