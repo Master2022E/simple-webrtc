@@ -13,6 +13,8 @@ const signalUrl = process.env.REACT_APP_SIGNAL_URL;
 const turnUrl = process.env.REACT_APP_TURN_URL;
 const turnUsername = process.env.REACT_APP_TURN_USERNAME;
 const turnPassword = process.env.REACT_APP_TURN_PASSWORD;
+const useFakeCamera = process.env.REACT_APP_USE_FAKE_CAMERA;
+
 
 console.log("Signal config:", signalUrl);
 console.log("Turn config:", turnUrl, turnUsername);
@@ -49,11 +51,18 @@ function CallScreen() {
     });
   };
 
+  const fakeCamera = () => {
+    if (useFakeCamera.toUpperCase() === "TRUE".toUpperCase()) {
+      return true
+    }
+    return false;
+  }
+
   const startConnection = () => {
     navigator.mediaDevices
       .getUserMedia({
         audio: true,
-        fake: true,
+        fake: fakeCamera(),
         video: {
           height: 350,
           width: 350,
