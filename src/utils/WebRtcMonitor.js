@@ -27,47 +27,6 @@ const config = {
 export const monitor = ClientMonitor.create(config);
 
 
-// define the metrics you want to expose
-//const METRICS_UPDATED = 'metricsUpdated';
-//const emitter = new EventEmitter();
-/*type TrackLayerMetrics = {
-  kind: string,
-  ssrc: number,
-  encodedFps?: number,
-  decodedFps?: number,
-  receivedFps?: number,
-  sentFps?: number,
-  sndKbps?: number,
-  rcvKbps?: number,
-};
-type TrackMetrics = {
-  layers: Map<number, TrackLayerMetrics>;
-}
-
-export type PeerConnectionMetrics = {
-  label?: string;
-  rtt?: number;
-};
-export type Metrics = {
-  statsCollectedInMs: number;
-  peerConnections: Map<string, PeerConnectionMetrics>;
-  tracks: Map<string, TrackMetrics>;
-};
-export type MetricsListener = (metrics: Metrics) => void;
-*/
-/*
-export function onMetricsUpdated(listener : MetricsListener) {
-  emitter.on(METRICS_UPDATED, listener);
-}
-
-export function offMetricsUpdated(listener : MetricsListener) {
-  emitter.off(METRICS_UPDATED, listener);
-}
-
-function emitMetricsUpdated(metrics : Metrics) {
-  emitter.emit(METRICS_UPDATED, metrics);
-}
-*/
 monitor.events.onStatsCollected(() => {
   const storage = monitor.storage;
   for (const peerConnection of storage.peerConnections()) {
