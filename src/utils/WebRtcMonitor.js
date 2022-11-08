@@ -11,9 +11,9 @@ const config = {
   samplingPeriodInMs: 10000,
   sendingPeriodInMs: 15000,
   sampler: {
-    roomId: "0",
-    clientId: uuidv4(),
-    userId: uuidv4(),
+    roomId: "0",          // Generated from the user
+    clientId: uuidv4(),   // Keep as a UUID
+    userId: uuidv4(),     // Generated from the user
   },
   sender: {
     format: "protobuf",
