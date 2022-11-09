@@ -398,7 +398,7 @@ function CallScreen({ clientId }) {
   });
 
   socket.on("data", (data) => {
-    console.log("Data received: ", data);
+    console.log("Data received: ", data.type);
     signalingDataHandler(data);
   });
 
