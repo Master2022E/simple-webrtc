@@ -5,7 +5,7 @@
     # Optional staging lets encrypt for testing. Comment out for production.
     # acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
 }
-thomsen-it.dk {
+thomsen-it.dk thomsen-it.dk:3000 {
     reverse_proxy webrtc-server:3000
 }
 www.thomsen-it.dk {
