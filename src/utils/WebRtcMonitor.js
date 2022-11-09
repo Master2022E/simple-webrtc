@@ -1,10 +1,10 @@
 import { ClientMonitor } from '@observertc/client-monitor-js';
 
-const observeRTCDomain = process.env.REACT_APP_OBSERVERTC_DOMAIN;
+const observeRTCUrl = process.env.REACT_APP_OBSERVERTC_URL;
 const observeRTCPort = process.env.REACT_APP_OBSERVERTC_PORT;
 const observeRTCPath = process.env.REACT_APP_OBSERVERTC_PATH;
 
-if (observeRTCDomain === undefined || observeRTCPort === undefined || observeRTCPath === undefined) {
+if (observeRTCUrl === undefined || observeRTCPort === undefined || observeRTCPath === undefined) {
   console.error("Missing one or more required environment variables: REACT_APP_OBSERVERTC_DOMAIN, REACT_APP_OBSERVERTC_PORT, REACT_APP_OBSERVERTC_PATH")
 }
 
@@ -15,7 +15,7 @@ const config = {
   sender: {
     format: "protobuf",
     websocket: {
-      urls: ["ws://" + observeRTCDomain + ":" + observeRTCPort + observeRTCPath],
+      urls: [observeRTCUrl + ":" + observeRTCPort + observeRTCPath],
       maxRetries: 3,
     }
   }
