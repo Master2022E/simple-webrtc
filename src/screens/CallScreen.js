@@ -150,7 +150,7 @@ function CallScreen({ clientId }) {
           monitor.addExtensionStats({
             type: "OUT_BOUND_RTC",
             payload: JSON.stringify({
-              stats
+              "stats": stats
             }),
           })
           /* stats contains: {
@@ -192,7 +192,7 @@ function CallScreen({ clientId }) {
           monitor.addExtensionStats({
             type: "REMOTE_IN_BOUND_RTC",
             payload: JSON.stringify({
-              remoteInboundRtpStats
+              "stats": remoteInboundRtpStats
             }),
           })
 
@@ -256,7 +256,7 @@ function CallScreen({ clientId }) {
           monitor.addExtensionStats({
             type: "IN_BOUND_RTC",
             payload: JSON.stringify({
-              stats
+              "stats": stats
             }),
           })
 
@@ -306,7 +306,7 @@ function CallScreen({ clientId }) {
           monitor.addExtensionStats({
             type: "REMOTE_OUT_BOUND_RTC",
             payload: JSON.stringify({
-              remoteOutboundRtpStats
+              "stats": remoteOutboundRtpStats
             }),
           })
 
