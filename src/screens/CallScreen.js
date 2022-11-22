@@ -7,6 +7,7 @@ import "./CallScreen.css";
 import WebRtcData from "../components/WebRtcData";
 import * as WebRtCMonitor from "../utils/WebRtcMonitor";
 import { v4 as uuidv4 } from 'uuid';
+import adapter from 'webrtc-adapter';
 
 
 const signalUrl = process.env.REACT_APP_SIGNAL_URL;
@@ -29,6 +30,9 @@ function CallScreen({ clientId }) {
   const stateRef = useRef();
   stateRef.current = logRtp
 
+  const [connectionState, setConnectionState] = useState("Initializing");
+  const [iceGatheringState, setIceGatheringState] = useState("Initializing");
+  const [signalState, setSignalState] = useState("Initializing");
   const [videoRTT, setVideoRTT] = useState(0);
   const [audioRTT, setAudioRTT] = useState(0);
   const [videoStat, setVideoStat] = useState({});
@@ -106,6 +110,23 @@ function CallScreen({ clientId }) {
       });
       pc.onicecandidate = onIceCandidate;
       pc.ontrack = onTrack;
+      pc.onsignalingstatechange = (ev) => {
+        console.log("SignalStateChanged", pc.signalingState, ev);
+        setSignalState(pc.signalingState);
+      };
+
+      pc.onicegatheringstatechange = (ev) => {
+        let connection = ev.target;
+        console.log("IceGatheringStateChanged", connection.iceGatheringState);
+        setIceGatheringState(connection.iceGatheringState);
+      };
+
+      pc.onconnectionstatechange = (ev) => {
+        switch (pc.connectionState) {
+        }
+        console.log("OnConnectionStateChanged", pc.connectionState);
+        setConnectionState(pc.connectionState);
+      }
       const localStream = localVideoRef.current.srcObject;
       for (const track of localStream.getTracks()) {
         pc.addTrack(track, localStream);
@@ -428,17 +449,40 @@ function CallScreen({ clientId }) {
       <div style={{ color: "#000000" }}>
         <table>
 
+          <tr>
+            <td>
+              <p>Enable console logging of RTP data connections:</p>
+            </td>
+            <td>
+              <input type="checkbox" onChange={handleChange} defaultChecked={logRtp} />
+
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <p>Connection state:</p>
+            </td>
+            <td>
+              <p>{connectionState}</p>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <p>Ice gathering state:</p>
+            </td>
+            <td>
+              <p>{iceGatheringState}</p>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <p>Signal state:</p>
+            </td>
+            <td>
+              <p>{signalState}</p>
+            </td>
+          </tr>
         </table>
-        <tr>
-          <td>
-            <p>Enable console logging of RTP data connections:</p>
-          </td>
-          <td>
-            <input type="checkbox" onChange={handleChange} defaultChecked={logRtp} />
-
-          </td>
-        </tr>
-
       </div>
     </div>
   );
