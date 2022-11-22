@@ -43,25 +43,25 @@ const Location = () => {
 
   return (
     <div style={{ color: "#000000" }}>
-      <h1 class="ip">
-        <span class="text">IP: </span>
-        <span class="value">{ip}</span>
+      <h1 className="ip">
+        <span className="text">IP: </span>
+        <span className="value">{ip}</span>
       </h1>
-      <p class="country">
-        <span class="text">Country: </span>
-        <span class="value">{country}</span>
+      <p className="country">
+        <span className="text">Country: </span>
+        <span className="value">{country}</span>
       </p>
-      <p class="region">
-        <span class="text">Region: </span>
-        <span class="value">{regionName}</span>
+      <p className="region">
+        <span className="text">Region: </span>
+        <span className="value">{regionName}</span>
       </p>
-      <p class="city">
-        <span class="text">City: </span>
-        <span class="value">{city}</span>
+      <p className="city">
+        <span className="text">City: </span>
+        <span className="value">{city}</span>
       </p>
-      <p class="isp">
-        <span class="text">ISP: </span>
-        <span class="value">{isp}</span>
+      <p className="isp">
+        <span className="text">ISP: </span>
+        <span className="value">{isp}</span>
       </p>
     </div>
   );

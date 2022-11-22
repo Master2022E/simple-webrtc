@@ -8,17 +8,17 @@ function HomeScreen({ room, setRoom, username, setUsername, clientId }) {
   return (
     <form method="post" action="">
       <Location></Location>
-      <label for="username">Username</label>
+      <label htmlFor="username">Username</label>
 
-      <input class="username-input"
+      <input className="username-input"
         value={username}
         title="username"
         onInput={(e) => setUsername(e.target.value)}
       />
 
-      <label for="room">Room</label>
+      <label htmlFor="room">Room</label>
 
-      <input class="room-input"
+      <input className="room-input"
         value={room}
         title="room"
         onInput={(e) => setRoom(e.target.value)}
