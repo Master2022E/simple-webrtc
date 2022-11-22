@@ -448,40 +448,41 @@ function CallScreen({ clientId }) {
 
       <div style={{ color: "#000000" }}>
         <table>
+          <tbody>
+            <tr>
+              <td>
+                <p>Enable console logging of RTP data connections:</p>
+              </td>
+              <td>
+                <input type="checkbox" onChange={handleChange} defaultChecked={logRtp} />
 
-          <tr>
-            <td>
-              <p>Enable console logging of RTP data connections:</p>
-            </td>
-            <td>
-              <input type="checkbox" onChange={handleChange} defaultChecked={logRtp} />
-
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <p>Connection state:</p>
-            </td>
-            <td>
-              <p>{connectionState}</p>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <p>Ice gathering state:</p>
-            </td>
-            <td>
-              <p>{iceGatheringState}</p>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <p>Signal state:</p>
-            </td>
-            <td>
-              <p>{signalState}</p>
-            </td>
-          </tr>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p>Connection state:</p>
+              </td>
+              <td>
+                <p>{connectionState}</p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p>Ice gathering state:</p>
+              </td>
+              <td>
+                <p>{iceGatheringState}</p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p>Signal state:</p>
+              </td>
+              <td>
+                <p>{signalState}</p>
+              </td>
+            </tr>
+          </tbody>
         </table>
       </div>
     </div>
