@@ -111,7 +111,7 @@ function CallScreen({ clientId }) {
       pc.onicecandidate = onIceCandidate;
       pc.ontrack = onTrack;
       pc.onsignalingstatechange = (ev) => {
-        console.log("SignalStateChanged", pc.signalingState, ev);
+        console.log("SignalStateChanged", pc.signalingState);
         setSignalState(pc.signalingState);
       };
 
@@ -201,60 +201,64 @@ function CallScreen({ clientId }) {
             type: "outbound-rtp"
           } */
 
-          const remoteInboundRtp = outboundRtp.getRemoteInboundRtp();
+          if (outboundRtp.getRemoteInboundRtp()) {
+            const remoteInboundRtp = outboundRtp.getRemoteInboundRtp();
 
-          const remoteInboundRtpStats = remoteInboundRtp.stats
 
-          const { roundTripTime, kind } = remoteInboundRtp.stats;
-          if (doLog) {
-            console.log("remoteInboundRtp (" + kind + ")", remoteInboundRtp.stats)
-          }
 
-          monitor.addExtensionStats({
-            type: "REMOTE_IN_BOUND_RTC",
-            payload: JSON.stringify({
-              "stats": remoteInboundRtpStats
-            }),
-          })
+            const remoteInboundRtpStats = remoteInboundRtp.stats
 
-          if (kind === "video") {
-            setVideoRTT(roundTripTime)
-            /* stats contains: {
-              codecId: "57e44166",
-              fractionLost: 0,
-              id: "49881f3",
-              jitter: 0.004,
-              kind: "video",
-              localId: "93489802",
-              mediaType: "video",
-              packetsLost: 0,
-              packetsReceived: 97,
-              roundTripTime: 0.026,
-              roundTripTimeMeasurements: 40,
-              ssrc: 3647127630,
-              timestamp: undefined,
-              totalRoundTripTime: 0.776,
-              type: "remote-inbound-rtp"
-            } */
-          } else if (kind === "audio") {
-            setAudioRTT(roundTripTime)
-            /* stats contains: {
-              codecId: "ce84b808",
-              fractionLost: 0,
-              id: "1c3c052d",
-              jitter: 0.004,
-              kind: "audio",
-              localId: "e9eea0d0",
-              mediaType: "audio",
-              packetsLost: 0,
-              packetsReceived: 1191,
-              roundTripTime: 0.021,
-              roundTripTimeMeasurements: 20,
-              ssrc: 342435103,
-              timestamp: undefined,
-              totalRoundTripTime: 0.376,
-              type: "remote-inbound-rtp"
-            } */
+            const { roundTripTime, kind } = remoteInboundRtp.stats;
+            if (doLog) {
+              console.log("remoteInboundRtp (" + kind + ")", remoteInboundRtp.stats)
+            }
+
+            monitor.addExtensionStats({
+              type: "REMOTE_IN_BOUND_RTC",
+              payload: JSON.stringify({
+                "stats": remoteInboundRtpStats
+              }),
+            })
+
+            if (kind === "video") {
+              setVideoRTT(roundTripTime)
+              /* stats contains: {
+                codecId: "57e44166",
+                fractionLost: 0,
+                id: "49881f3",
+                jitter: 0.004,
+                kind: "video",
+                localId: "93489802",
+                mediaType: "video",
+                packetsLost: 0,
+                packetsReceived: 97,
+                roundTripTime: 0.026,
+                roundTripTimeMeasurements: 40,
+                ssrc: 3647127630,
+                timestamp: undefined,
+                totalRoundTripTime: 0.776,
+                type: "remote-inbound-rtp"
+              } */
+            } else if (kind === "audio") {
+              setAudioRTT(roundTripTime)
+              /* stats contains: {
+                codecId: "ce84b808",
+                fractionLost: 0,
+                id: "1c3c052d",
+                jitter: 0.004,
+                kind: "audio",
+                localId: "e9eea0d0",
+                mediaType: "audio",
+                packetsLost: 0,
+                packetsReceived: 1191,
+                roundTripTime: 0.021,
+                roundTripTimeMeasurements: 20,
+                ssrc: 342435103,
+                timestamp: undefined,
+                totalRoundTripTime: 0.376,
+                type: "remote-inbound-rtp"
+              } */
+            }
           }
         }
 
@@ -448,40 +452,41 @@ function CallScreen({ clientId }) {
 
       <div style={{ color: "#000000" }}>
         <table>
+          <tbody>
+            <tr>
+              <td>
+                <p>Enable console logging of RTP data connections:</p>
+              </td>
+              <td>
+                <input type="checkbox" onChange={handleChange} defaultChecked={logRtp} />
 
-          <tr>
-            <td>
-              <p>Enable console logging of RTP data connections:</p>
-            </td>
-            <td>
-              <input type="checkbox" onChange={handleChange} defaultChecked={logRtp} />
-
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <p>Connection state:</p>
-            </td>
-            <td>
-              <p>{connectionState}</p>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <p>Ice gathering state:</p>
-            </td>
-            <td>
-              <p>{iceGatheringState}</p>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <p>Signal state:</p>
-            </td>
-            <td>
-              <p>{signalState}</p>
-            </td>
-          </tr>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p>Connection state:</p>
+              </td>
+              <td>
+                <p>{connectionState}</p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p>Ice gathering state:</p>
+              </td>
+              <td>
+                <p>{iceGatheringState}</p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p>Signal state:</p>
+              </td>
+              <td>
+                <p>{signalState}</p>
+              </td>
+            </tr>
+          </tbody>
         </table>
       </div>
     </div>
