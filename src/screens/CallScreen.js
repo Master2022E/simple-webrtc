@@ -111,7 +111,7 @@ function CallScreen({ clientId }) {
       pc.onicecandidate = onIceCandidate;
       pc.ontrack = onTrack;
       pc.onsignalingstatechange = (ev) => {
-        console.log("SignalStateChanged", pc.signalingState, ev);
+        console.log("SignalStateChanged", pc.signalingState);
         setSignalState(pc.signalingState);
       };
 
