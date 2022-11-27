@@ -16,7 +16,6 @@ const turnUsername = process.env.REACT_APP_TURN_USERNAME;
 const turnPassword = process.env.REACT_APP_TURN_PASSWORD;
 const useFakeCamera = process.env.REACT_APP_USE_FAKE_CAMERA;
 
-
 console.log("Signal config:", signalUrl);
 console.log("Turn config:", turnUrl, turnUsername);
 
@@ -30,6 +29,7 @@ function CallScreen({ clientId }) {
   const stateRef = useRef();
   stateRef.current = logRtp
 
+  const [datachannelState, setdatachannelState] = useState("Initializing");
   const [connectionState, setConnectionState] = useState("Initializing");
   const [iceGatheringState, setIceGatheringState] = useState("Initializing");
   const [signalState, setSignalState] = useState("Initializing");
@@ -44,7 +44,7 @@ function CallScreen({ clientId }) {
   });
 
   let pc; // For RTCPeerConnection Object
-
+  
   const sendData = (data) => {
     socket.emit("data", {
       username: username,
@@ -110,6 +110,18 @@ function CallScreen({ clientId }) {
       });
       pc.onicecandidate = onIceCandidate;
       pc.ontrack = onTrack;
+
+      // Open a datachannel that we can use to track if the connection was closed by network drop or intentionally
+      // https://stackoverflow.com/questions/66297347/why-does-calling-rtcpeerconnection-close-not-send-closed-event
+      const dc1 = pc.createDataChannel("");
+      dc1.onopen = () => setdatachannelState("Open");
+      dc1.onclose = () => setdatachannelState("Closed");
+      pc.ondatachannel = e => {
+        const receiveChannel = e.channel;
+        window.keepalive = e.channel; // Firefox GC workaround
+        receiveChannel.onmessage = onReceiveMessage;
+      }
+
       pc.onsignalingstatechange = (ev) => {
         console.log("SignalStateChanged", pc.signalingState);
         setSignalState(pc.signalingState);
@@ -445,7 +457,7 @@ function CallScreen({ clientId }) {
       <WebRtcData videoStat={videoStat} audioStat={audioStat} videoRTT={videoRTT} audioRTT={audioRTT}></WebRtcData>
       <label>{"Username: " + username}</label>
       <label>{"Room Id: " + room}</label>
-      <label>{"Client Id: " + clientId}</label>
+      <label className="client_id">{"Client Id: " + clientId}</label>
 
       <video autoPlay muted playsInline ref={localVideoRef} />
       <video autoPlay playsInline ref={remoteVideoRef} />
@@ -464,10 +476,18 @@ function CallScreen({ clientId }) {
             </tr>
             <tr>
               <td>
+                <p>Datachannel state:</p>
+              </td>
+              <td>
+                <p className="datachannelState">{datachannelState}</p>
+              </td>
+            </tr>
+            <tr>
+              <td>
                 <p>Connection state:</p>
               </td>
               <td>
-                <p>{connectionState}</p>
+                <p className="connectionState">{connectionState}</p>
               </td>
             </tr>
             <tr>
@@ -475,7 +495,7 @@ function CallScreen({ clientId }) {
                 <p>Ice gathering state:</p>
               </td>
               <td>
-                <p>{iceGatheringState}</p>
+                <p className="iceGatheringState">{iceGatheringState}</p>
               </td>
             </tr>
             <tr>
@@ -483,7 +503,7 @@ function CallScreen({ clientId }) {
                 <p>Signal state:</p>
               </td>
               <td>
-                <p>{signalState}</p>
+                <p className="signalState">{signalState}</p>
               </td>
             </tr>
           </tbody>
