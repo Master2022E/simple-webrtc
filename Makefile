@@ -28,5 +28,5 @@ stop:
 local-install:
 	npm i
 
-lcoal-run:
+local-run:
 	npm start run

@@ -67,8 +67,7 @@ function CallScreen({ clientId }) {
         fake: fakeCamera(),
         video: {
           height: {exact: 480},
-          width: {exact: 640},
-          frameRate: { exact: 30 }
+          width: {exact: 640}
         },
       })
       .then((stream) => {
