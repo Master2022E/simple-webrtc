@@ -467,7 +467,7 @@ function CallScreen({ clientId }) {
                 <p>Connection state:</p>
               </td>
               <td>
-                <p>{connectionState}</p>
+                <p className="connectionState">{connectionState}</p>
               </td>
             </tr>
             <tr>
@@ -475,7 +475,7 @@ function CallScreen({ clientId }) {
                 <p>Ice gathering state:</p>
               </td>
               <td>
-                <p>{iceGatheringState}</p>
+                <p className="iceGatheringState">{iceGatheringState}</p>
               </td>
             </tr>
             <tr>
@@ -483,7 +483,7 @@ function CallScreen({ clientId }) {
                 <p>Signal state:</p>
               </td>
               <td>
-                <p>{signalState}</p>
+                <p className="signalState">{signalState}</p>
               </td>
             </tr>
           </tbody>
