@@ -66,8 +66,8 @@ function CallScreen({ clientId }) {
         audio: true,
         fake: fakeCamera(),
         video: {
-          height: {min: 480, ideal: 480},
-          width: {min: 640, ideal: 640}          
+          height: { min: 480, ideal: 480 },
+          width: { min: 640, ideal: 640 }
         },
       })
       .then((stream) => {
@@ -459,7 +459,6 @@ function CallScreen({ clientId }) {
               </td>
               <td>
                 <input type="checkbox" onChange={handleChange} defaultChecked={logRtp} />
-
               </td>
             </tr>
             <tr>
