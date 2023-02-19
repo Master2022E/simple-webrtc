@@ -2,7 +2,13 @@
 
 This work is firstly inspired by [simple-signaling-server](https://www.100ms.live/blog/webrtc-python-react-app) and then futher extended.
 
-Now the [ObserveRTC](https://github.com/Master2022E/client-monitor-js) client is needed locally in af folder next to this projects folder. And run the command `npm install ../client-monitor-js/`. Each time there is an update to that module. Also typescript might be need. Install with `npm install -g typescript`.
+Currently hosted on [https://stage.thomsen-it.dk](https://stage.thomsen-it.dk)
+
+Front page             |  Call in progress
+:-------------------------:|:-------------------------:
+![Front page](./docs/ApplicationImages/frontpage.png)  |  ![Call in progress](./docs/ApplicationImages/CallInProgress.png)
+
+## Development
 
 To run the application locally
 
