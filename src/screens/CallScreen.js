@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useRef, useEffect, useState } from "react";
 import Location from "../components/Location";
 import socketio from "socket.io-client";
+
 import "./CallScreen.css";
 //import { ClientMonitor } from "@observertc/client-monitor-js";
 import WebRtcData from "../components/WebRtcData";
@@ -149,7 +150,7 @@ function CallScreen({ clientId }) {
         // First lets look at the data that we send to the receiver.
         // This includes outbound-rtp and remote-inbound.rtp
 
-        console.log("Stats collected");
+        //console.log("Stats collected");
 
         const doLog = stateRef.current
 
@@ -439,16 +440,81 @@ function CallScreen({ clientId }) {
     setLogRtp(checked)
   }
 
+
+  let lastVideoResult
+  let lastAudioResult
+
+  const [videoBitRate, setVideoBitRate] = useState(0);
+  const [audioBitRate, setAudioBitRate] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!pc) return;
+
+      pc.getSenders().forEach(sender => {
+        if (!sender) {
+          return;
+        }
+
+
+        sender.getStats().then(res => {
+          res.forEach(report => {
+            let bytes;
+            let headerBytes;
+            let packets;
+            if (report.type === 'outbound-rtp') {
+              if (report.isRemote) {
+                return;
+              }
+              const now = report.timestamp;
+              bytes = report.bytesSent;
+              console.log("bytesSent", bytes, "media", report.mediaType, "kind", report.kind)
+              headerBytes = report.headerBytesSent;
+
+              packets = report.packetsSent;
+              if (report.mediaType === "video") {
+
+                if (lastVideoResult && lastVideoResult.has(report.id)) {
+                  // calculate bitrate
+                  const bitrate = 8 * (bytes - lastVideoResult.get(report.id).bytesSent) / (now - lastVideoResult.get(report.id).timestamp);
+                  setVideoBitRate(bitrate);
+                  const headerrate = 8 * (headerBytes - lastVideoResult.get(report.id).headerBytesSent) / (now - lastVideoResult.get(report.id).timestamp);
+
+                }
+                lastVideoResult = res
+              } else if (report.mediaType === "audio") {
+                if (lastAudioResult && lastAudioResult.has(report.id)) {
+                  // calculate bitrate
+                  const bitrate = 8 * (bytes - lastAudioResult.get(report.id).bytesSent) / (now - lastAudioResult.get(report.id).timestamp);
+                  setAudioBitRate(bitrate);
+                  const headerrate = 8 * (headerBytes - lastAudioResult.get(report.id).headerBytesSent) / (now - lastAudioResult.get(report.id).timestamp);
+                }
+                lastAudioResult = res
+              }
+            }
+          });
+        });
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+
+  //<WebRtcData videoStat={videoStat} audioStat={audioStat} videoRTT={videoRTT} audioRTT={audioRTT}></WebRtcData>
   return (
     <div>
       <Location></Location>
-      <WebRtcData videoStat={videoStat} audioStat={audioStat} videoRTT={videoRTT} audioRTT={audioRTT}></WebRtcData>
       <label>{"Username: " + username}</label>
       <label>{"Room Id: " + room}</label>
       <label>{"Client Id: " + clientId}</label>
 
       <video autoPlay muted playsInline ref={localVideoRef} />
       <video autoPlay playsInline ref={remoteVideoRef} />
+
+      <label>{"Video bit rate: " + videoBitRate}</label>
+      <label>{"Audio bit rate: " + audioBitRate}</label>
+
+      <TimelineGraphView></TimelineGraphView>
 
       <div style={{ color: "#000000" }}>
         <table>
