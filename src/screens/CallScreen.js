@@ -514,8 +514,6 @@ function CallScreen({ clientId }) {
       <label>{"Video bit rate: " + videoBitRate}</label>
       <label>{"Audio bit rate: " + audioBitRate}</label>
 
-      <TimelineGraphView></TimelineGraphView>
-
       <div style={{ color: "#000000" }}>
         <table>
           <tbody>
