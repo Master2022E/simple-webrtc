@@ -2,7 +2,6 @@ import { useParams } from "react-router-dom";
 import { useRef, useEffect, useState } from "react";
 import Location from "../components/Location";
 import socketio from "socket.io-client";
-
 import "./CallScreen.css";
 //import { ClientMonitor } from "@observertc/client-monitor-js";
 import WebRtcData from "../components/WebRtcData";
@@ -444,8 +443,8 @@ function CallScreen({ clientId }) {
   let lastVideoResult
   let lastAudioResult
 
-  const [videoBitRate, setVideoBitRate] = useState(0);
-  const [audioBitRate, setAudioBitRate] = useState(0);
+  const [videoBitRate, setVideoBitRate] = useState([0]);
+  const [audioBitRate, setAudioBitRate] = useState([0]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -468,16 +467,17 @@ function CallScreen({ clientId }) {
               }
               const now = report.timestamp;
               bytes = report.bytesSent;
-              console.log("bytesSent", bytes, "media", report.mediaType, "kind", report.kind)
               headerBytes = report.headerBytesSent;
 
               packets = report.packetsSent;
+              let bitrate;
               if (report.mediaType === "video") {
 
                 if (lastVideoResult && lastVideoResult.has(report.id)) {
                   // calculate bitrate
-                  const bitrate = 8 * (bytes - lastVideoResult.get(report.id).bytesSent) / (now - lastVideoResult.get(report.id).timestamp);
-                  setVideoBitRate(bitrate);
+                  bitrate = 8 * (bytes - lastVideoResult.get(report.id).bytesSent) / (now - lastVideoResult.get(report.id).timestamp);
+                  setVideoBitRate(videoBitRate.push(bitrate));
+
                   const headerrate = 8 * (headerBytes - lastVideoResult.get(report.id).headerBytesSent) / (now - lastVideoResult.get(report.id).timestamp);
 
                 }
@@ -485,22 +485,31 @@ function CallScreen({ clientId }) {
               } else if (report.mediaType === "audio") {
                 if (lastAudioResult && lastAudioResult.has(report.id)) {
                   // calculate bitrate
-                  const bitrate = 8 * (bytes - lastAudioResult.get(report.id).bytesSent) / (now - lastAudioResult.get(report.id).timestamp);
-                  setAudioBitRate(bitrate);
+                  bitrate = 8 * (bytes - lastAudioResult.get(report.id).bytesSent) / (now - lastAudioResult.get(report.id).timestamp);
+                  setAudioBitRate(audioBitRate.push(bitrate));
                   const headerrate = 8 * (headerBytes - lastAudioResult.get(report.id).headerBytesSent) / (now - lastAudioResult.get(report.id).timestamp);
                 }
                 lastAudioResult = res
               }
+              //console.log("Media: ", report.mediaType, "current bitrate [kbps]: ", bitrate)
             }
           });
         });
       });
+      if ((videoBitRate.length % 50) === 0) {
+        console.log("Video bitrate [kbps]: ", videoBitRate)
+      }
+      if ((audioBitRate.length % 50) === 0) {
+        console.log("Audio bitrate [kbps]: ", audioBitRate)
+      }
     }, 1000);
     return () => clearInterval(interval);
   }, []);
 
 
   //<WebRtcData videoStat={videoStat} audioStat={audioStat} videoRTT={videoRTT} audioRTT={audioRTT}></WebRtcData>
+  //<label>{"Video bit rate: " + videoBitRate.slice(-1)[0]}</label>
+  //<label>{"Audio bit rate: " + audioBitRate}</label>
   return (
     <div>
       <Location></Location>
@@ -511,8 +520,7 @@ function CallScreen({ clientId }) {
       <video autoPlay muted playsInline ref={localVideoRef} />
       <video autoPlay playsInline ref={remoteVideoRef} />
 
-      <label>{"Video bit rate: " + videoBitRate}</label>
-      <label>{"Audio bit rate: " + audioBitRate}</label>
+
 
       <div style={{ color: "#000000" }}>
         <table>
